@@ -43,3 +43,61 @@
   padding: 10px;
   cursor: pointer;
 }
+
+.rating-section {
+  margin-top: 15px;
+}
+
+.rating-buttons {
+  display: flex;
+  gap: 8px;
+  margin-top: 8px;
+}
+
+.rating-button {
+  width: 40px;
+  height: 40px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  background: white;
+  cursor: pointer;
+  font-weight: 600;
+}
+
+.rating-button:hover {
+  background: #f0f0f0;
+}
+
+.rating-button.selected {
+  background: #222;
+  color: white;
+}
+
+.rating-section {
+  margin-top: 15px;
+}
+
+.rating-buttons {
+  display: flex;
+  gap: 8px;
+  margin-top: 8px;
+}
+
+.rating-button {
+  width: 40px;
+  height: 40px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  background: white;
+  cursor: pointer;
+  font-weight: 600;
+}
+
+.rating-button:hover {
+  background: #f0f0f0;
+}
+
+.rating-button.selected {
+  background: #222;
+  color: white;
+}
