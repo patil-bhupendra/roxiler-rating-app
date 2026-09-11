@@ -269,15 +269,80 @@ const getUsers = async (req, res) => {
   }
 };
 
+const getUserDetails = async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    const user = await User.findByPk(id, {
+      attributes: ["id", "name", "email", "address", "role", "createdAt"],
+    });
+
+    if (!user) {
+      return res.status(404).json({
+        message: "User not found",
+      });
+    }
+
+    const userDetails = {
+      id: user.id,
+      name: user.name,
+      email: user.email,
+      address: user.address,
+      role: user.role,
+    };
+
+    if (user.role === "OWNER") {
+      const store = await Store.findOne({
+        where: {
+          ownerId: user.id,
+        },
+      });
+
+      if (store) {
+        const ratings = await Rating.findAll({
+          where: {
+            storeId: store.id,
+          },
+          attributes: ["rating"],
+        });
+
+        let averageRating = 0;
+
+        if (ratings.length > 0) {
+          const totalRating = ratings.reduce(
+            (sum, item) => sum + item.rating,
+            0,
+          );
+
+          averageRating = totalRating / ratings.length;
+        }
+
+        userDetails.store = {
+          id: store.id,
+          name: store.name,
+          email: store.email,
+          address: store.address,
+          averageRating: Number(averageRating.toFixed(1)),
+          totalRatings: ratings.length,
+        };
+      }
+    }
+
+    res.status(200).json({
+      user: userDetails,
+    });
+  } catch (error) {
+    console.error("Get user details error:", error);
+
+    res.status(500).json({
+      message: "Server error",
+    });
+  }
+};
+
 const getStores = async (req, res) => {
   try {
-    const {
-      name,
-      email,
-      address,
-      sortBy = "id",
-      order = "ASC",
-    } = req.query;
+    const { name, email, address, sortBy = "id", order = "ASC" } = req.query;
 
     const where = {};
 
@@ -299,20 +364,13 @@ const getStores = async (req, res) => {
       };
     }
 
-    const allowedSortFields = [
-      "id",
-      "name",
-      "email",
-      "address",
-      "createdAt",
-    ];
+    const allowedSortFields = ["id", "name", "email", "address", "createdAt"];
 
     const selectedSortField = allowedSortFields.includes(sortBy)
       ? sortBy
       : "id";
 
-    const selectedOrder =
-      order.toUpperCase() === "DESC" ? "DESC" : "ASC";
+    const selectedOrder = order.toUpperCase() === "DESC" ? "DESC" : "ASC";
 
     const stores = await Store.findAll({
       where,
@@ -328,7 +386,11 @@ const getStores = async (req, res) => {
         "email",
         "address",
         [
-          sequelize.fn("COALESCE", sequelize.fn("AVG", sequelize.col("Ratings.rating")), 0),
+          sequelize.fn(
+            "COALESCE",
+            sequelize.fn("AVG", sequelize.col("Ratings.rating")),
+            0,
+          ),
           "overallRating",
         ],
       ],
@@ -356,4 +418,5 @@ module.exports = {
   getDashboardStats,
   getUsers,
   getStores,
+  getUserDetails,
 };
