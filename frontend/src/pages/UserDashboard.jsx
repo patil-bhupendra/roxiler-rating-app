@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 const UserDashboard = () => {
   const [stores, setStores] = useState([]);
@@ -8,6 +9,7 @@ const UserDashboard = () => {
   const [currentPassword, setCurrentPassword] = useState("");
   const [newPassword, setNewPassword] = useState("");
   const [passwordLoading, setPasswordLoading] = useState(false);
+  const navigate = useNavigate();
 
   const token = localStorage.getItem("token");
 
@@ -158,9 +160,18 @@ const UserDashboard = () => {
     }
   };
 
+  const handleLogout = () => {
+    localStorage.removeItem("token");
+    localStorage.removeItem("user");
+
+    navigate("/login");
+  };
+
   return (
     <div>
       <h1>User Dashboard</h1>
+
+      <button onClick={handleLogout}>Logout</button>
 
       <div className="password-section">
         <h2>Update Password</h2>
