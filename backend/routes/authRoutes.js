@@ -1,5 +1,5 @@
 const express = require("express");
-const { register, login } = require("../controllers/authController");
+const { register, login, updatePassword, } = require("../controllers/authController");
 
 const authMiddleware = require("../middleware/authMiddleware");
 const roleMiddleware = require("../middleware/roleMiddleware");
@@ -15,5 +15,7 @@ router.get("/me", authMiddleware, (req, res) => {
     user: req.user,
   });
 });
+
+router.put("/password", authMiddleware, updatePassword);
 
 module.exports = router;

@@ -55,14 +55,12 @@ const login = async (req, res) => {
   try {
     const { email, password } = req.body;
 
-    // 1. Check required fields
     if (!email || !password) {
       return res.status(400).json({
         message: "Email and password are required",
       });
     }
 
-    // 2. Find user by email
     const user = await User.findOne({
       where: { email },
     });
@@ -73,7 +71,6 @@ const login = async (req, res) => {
       });
     }
 
-    // 3. Compare entered password with hashed password
     const isPasswordValid = await bcrypt.compare(password, user.password);
 
     if (!isPasswordValid) {
@@ -82,7 +79,6 @@ const login = async (req, res) => {
       });
     }
 
-    // 4. Create JWT token
     const token = jwt.sign(
       {
         id: user.id,
@@ -94,7 +90,6 @@ const login = async (req, res) => {
       },
     );
 
-    // 5. Send response
     res.status(200).json({
       message: "Login successful",
       token,
@@ -115,7 +110,64 @@ const login = async (req, res) => {
   }
 };
 
+const updatePassword = async (req, res) => {
+  try {
+    const { currentPassword, newPassword } = req.body;
+
+    if (!currentPassword || !newPassword) {
+      return res.status(400).json({
+        message: "Current password and new password are required",
+      });
+    }
+
+    const passwordRegex = /^(?=.*[A-Z])(?=.*[^A-Za-z0-9]).{8,16}$/;
+
+    if (!passwordRegex.test(newPassword)) {
+      return res.status(400).json({
+        message:
+          "New password must be 8-16 characters long and contain at least one uppercase letter and one special character",
+      });
+    }
+
+    const user = await User.findByPk(req.user.id);
+
+    if (!user) {
+      return res.status(404).json({
+        message: "User not found",
+      });
+    }
+
+    const isPasswordValid = await bcrypt.compare(
+      currentPassword,
+      user.password,
+    );
+
+    if (!isPasswordValid) {
+      return res.status(401).json({
+        message: "Current password is incorrect",
+      });
+    }
+
+    const hashedPassword = await bcrypt.hash(newPassword, 10);
+
+    user.password = hashedPassword;
+
+    await user.save();
+
+    res.status(200).json({
+      message: "Password updated successfully",
+    });
+  } catch (error) {
+    console.error("Update password error:", error);
+
+    res.status(500).json({
+      message: "Server error",
+    });
+  }
+};
+
 module.exports = {
   register,
   login,
+  updatePassword,
 };
