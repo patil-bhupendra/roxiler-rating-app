@@ -165,3 +165,43 @@
 .password-section button:disabled {
   cursor: not-allowed;
 }
+
+.admin-dashboard {
+  padding: 30px;
+}
+
+.admin-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 30px;
+}
+
+.admin-header button {
+  padding: 10px 16px;
+  cursor: pointer;
+}
+
+.stats-container {
+  display: flex;
+  gap: 20px;
+  flex-wrap: wrap;
+}
+
+.stat-card {
+  width: 220px;
+  padding: 20px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+}
+
+.stat-card h2 {
+  margin-top: 0;
+  font-size: 18px;
+}
+
+.stat-card p {
+  font-size: 32px;
+  font-weight: 700;
+  margin-bottom: 0;
+}
