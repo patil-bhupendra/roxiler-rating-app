@@ -5,6 +5,9 @@ const UserDashboard = () => {
   const [nameSearch, setNameSearch] = useState("");
   const [addressSearch, setAddressSearch] = useState("");
   const [loading, setLoading] = useState(true);
+  const [currentPassword, setCurrentPassword] = useState("");
+  const [newPassword, setNewPassword] = useState("");
+  const [passwordLoading, setPasswordLoading] = useState(false);
 
   const token = localStorage.getItem("token");
 
@@ -113,9 +116,83 @@ const UserDashboard = () => {
     }
   };
 
+  const updatePassword = async (e) => {
+    e.preventDefault();
+
+    if (!currentPassword || !newPassword) {
+      alert("Please enter current and new password");
+      return;
+    }
+
+    try {
+      setPasswordLoading(true);
+
+      const response = await fetch("http://localhost:5000/api/auth/password", {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({
+          currentPassword,
+          newPassword,
+        }),
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        alert(data.message);
+        return;
+      }
+
+      alert("Password updated successfully");
+
+      setCurrentPassword("");
+      setNewPassword("");
+    } catch (error) {
+      console.error("Update password error:", error);
+      alert("Unable to update password");
+    } finally {
+      setPasswordLoading(false);
+    }
+  };
+
   return (
     <div>
       <h1>User Dashboard</h1>
+
+      <div className="password-section">
+        <h2>Update Password</h2>
+
+        <form onSubmit={updatePassword}>
+          <div>
+            <label>Current Password</label>
+
+            <input
+              type="password"
+              placeholder="Enter current password"
+              value={currentPassword}
+              onChange={(e) => setCurrentPassword(e.target.value)}
+            />
+          </div>
+
+          <div>
+            <label>New Password</label>
+
+            <input
+              type="password"
+              placeholder="Enter new password"
+              value={newPassword}
+              onChange={(e) => setNewPassword(e.target.value)}
+            />
+          </div>
+
+          <button type="submit" disabled={passwordLoading}>
+            {passwordLoading ? "Updating..." : "Update Password"}
+          </button>
+        </form>
+      </div>
 
       <div className="search-section">
         <input

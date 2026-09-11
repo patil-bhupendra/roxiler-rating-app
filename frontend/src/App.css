@@ -126,3 +126,42 @@
   padding: 20px;
   margin-bottom: 20px;
 }
+
+.password-section {
+  width: 400px;
+  margin-bottom: 30px;
+  padding: 20px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+}
+
+.password-section h2 {
+  margin-top: 0;
+  margin-bottom: 20px;
+}
+
+.password-section form {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.password-section label {
+  display: block;
+  margin-bottom: 6px;
+}
+
+.password-section input {
+  width: 100%;
+  padding: 10px;
+  box-sizing: border-box;
+}
+
+.password-section button {
+  padding: 10px;
+  cursor: pointer;
+}
+
+.password-section button:disabled {
+  cursor: not-allowed;
+}
