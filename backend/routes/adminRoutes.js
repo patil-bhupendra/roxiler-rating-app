@@ -5,6 +5,8 @@ const {
   createStore,
   assignStoreOwner,
   getDashboardStats,
+  getUsers,
+  getStores,
 } = require("../controllers/adminController");
 const authMiddleware = require("../middleware/authMiddleware");
 const roleMiddleware = require("../middleware/roleMiddleware");
@@ -28,5 +30,9 @@ router.get(
   roleMiddleware("ADMIN"),
   getDashboardStats,
 );
+
+router.get("/users", authMiddleware, roleMiddleware("ADMIN"), getUsers);
+
+router.get("/stores", authMiddleware, roleMiddleware("ADMIN"), getStores);
 
 module.exports = router;

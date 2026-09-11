@@ -1,5 +1,7 @@
 const bcrypt = require("bcryptjs");
 const { User, Store, Rating } = require("../models");
+const { Op } = require("sequelize");
+const sequelize = require("../config/database");
 
 const createUser = async (req, res) => {
   try {
@@ -196,9 +198,162 @@ const getDashboardStats = async (req, res) => {
   }
 };
 
+const getUsers = async (req, res) => {
+  try {
+    const {
+      name,
+      email,
+      address,
+      role,
+      sortBy = "id",
+      order = "ASC",
+    } = req.query;
+
+    const where = {};
+
+    if (name) {
+      where.name = {
+        [Op.like]: `%${name}%`,
+      };
+    }
+
+    if (email) {
+      where.email = {
+        [Op.like]: `%${email}%`,
+      };
+    }
+
+    if (address) {
+      where.address = {
+        [Op.like]: `%${address}%`,
+      };
+    }
+
+    if (role) {
+      where.role = role;
+    }
+
+    const allowedSortFields = [
+      "id",
+      "name",
+      "email",
+      "address",
+      "role",
+      "createdAt",
+    ];
+
+    const selectedSortField = allowedSortFields.includes(sortBy)
+      ? sortBy
+      : "id";
+
+    const selectedOrder = order.toUpperCase() === "DESC" ? "DESC" : "ASC";
+
+    const users = await User.findAll({
+      where,
+
+      attributes: ["id", "name", "email", "address", "role", "createdAt"],
+
+      order: [[selectedSortField, selectedOrder]],
+    });
+
+    res.status(200).json({
+      count: users.length,
+      users,
+    });
+  } catch (error) {
+    console.error("Get users error:", error);
+
+    res.status(500).json({
+      message: "Server error",
+    });
+  }
+};
+
+const getStores = async (req, res) => {
+  try {
+    const {
+      name,
+      email,
+      address,
+      sortBy = "id",
+      order = "ASC",
+    } = req.query;
+
+    const where = {};
+
+    if (name) {
+      where.name = {
+        [Op.like]: `%${name}%`,
+      };
+    }
+
+    if (email) {
+      where.email = {
+        [Op.like]: `%${email}%`,
+      };
+    }
+
+    if (address) {
+      where.address = {
+        [Op.like]: `%${address}%`,
+      };
+    }
+
+    const allowedSortFields = [
+      "id",
+      "name",
+      "email",
+      "address",
+      "createdAt",
+    ];
+
+    const selectedSortField = allowedSortFields.includes(sortBy)
+      ? sortBy
+      : "id";
+
+    const selectedOrder =
+      order.toUpperCase() === "DESC" ? "DESC" : "ASC";
+
+    const stores = await Store.findAll({
+      where,
+      include: [
+        {
+          model: Rating,
+          attributes: [],
+        },
+      ],
+      attributes: [
+        "id",
+        "name",
+        "email",
+        "address",
+        [
+          sequelize.fn("COALESCE", sequelize.fn("AVG", sequelize.col("Ratings.rating")), 0),
+          "overallRating",
+        ],
+      ],
+      group: ["Store.id"],
+      order: [[selectedSortField, selectedOrder]],
+    });
+
+    res.status(200).json({
+      count: stores.length,
+      stores,
+    });
+  } catch (error) {
+    console.error("Get stores error:", error);
+
+    res.status(500).json({
+      message: "Server error",
+    });
+  }
+};
+
 module.exports = {
   createUser,
   createStore,
   assignStoreOwner,
   getDashboardStats,
+  getUsers,
+  getStores,
 };
