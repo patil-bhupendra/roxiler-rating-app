@@ -58,6 +58,56 @@ const submitRating = async (req, res) => {
   }
 };
 
+const updateRating = async (req, res) => {
+  try {
+    const { rating } = req.body;
+    const { storeId } = req.params;
+
+    if (rating === undefined) {
+      return res.status(400).json({
+        message: "Rating is required",
+      });
+    }
+
+    if (!Number.isInteger(rating) || rating < 1 || rating > 5) {
+      return res.status(400).json({
+        message: "Rating must be an integer between 1 and 5",
+      });
+    }
+
+    const userId = req.user.id;
+
+    const existingRating = await Rating.findOne({
+      where: {
+        userId,
+        storeId,
+      },
+    });
+
+    if (!existingRating) {
+      return res.status(404).json({
+        message: "Rating not found",
+      });
+    }
+
+    existingRating.rating = rating;
+
+    await existingRating.save();
+
+    res.status(200).json({
+      message: "Rating updated successfully",
+      rating: existingRating,
+    });
+  } catch (error) {
+    console.error("Update rating error:", error);
+
+    res.status(500).json({
+      message: "Server error",
+    });
+  }
+};
+
 module.exports = {
   submitRating,
+  updateRating,
 };
