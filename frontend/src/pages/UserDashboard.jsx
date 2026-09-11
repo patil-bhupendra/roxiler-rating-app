@@ -2,17 +2,28 @@ import { useEffect, useState } from "react";
 
 const UserDashboard = () => {
   const [stores, setStores] = useState([]);
-  const [search, setSearch] = useState("");
+  const [nameSearch, setNameSearch] = useState("");
+  const [addressSearch, setAddressSearch] = useState("");
   const [loading, setLoading] = useState(true);
 
   const token = localStorage.getItem("token");
 
-  const fetchStores = async () => {
+  const fetchStores = async (name = nameSearch, address = addressSearch) => {
     try {
       setLoading(true);
 
+      const queryParams = new URLSearchParams();
+
+      if (name.trim()) {
+        queryParams.append("name", name.trim());
+      }
+
+      if (address.trim()) {
+        queryParams.append("address", address.trim());
+      }
+
       const response = await fetch(
-        `http://localhost:5000/api/stores?name=${search}`,
+        `http://localhost:5000/api/stores?${queryParams.toString()}`,
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -37,7 +48,7 @@ const UserDashboard = () => {
   };
 
   useEffect(() => {
-    fetchStores();
+    fetchStores("", "");
   }, []);
 
   const submitRating = async (storeId, rating) => {
@@ -106,15 +117,32 @@ const UserDashboard = () => {
     <div>
       <h1>User Dashboard</h1>
 
-      <div>
+      <div className="search-section">
         <input
           type="text"
-          placeholder="Search store by name"
-          value={search}
-          onChange={(e) => setSearch(e.target.value)}
+          placeholder="Search by store name"
+          value={nameSearch}
+          onChange={(e) => setNameSearch(e.target.value)}
         />
 
-        <button onClick={fetchStores}>Search</button>
+        <input
+          type="text"
+          placeholder="Search by address"
+          value={addressSearch}
+          onChange={(e) => setAddressSearch(e.target.value)}
+        />
+
+        <button onClick={() => fetchStores()}>Search</button>
+
+        <button
+          onClick={() => {
+            setNameSearch("");
+            setAddressSearch("");
+            fetchStores("", "");
+          }}
+        >
+          Clear
+        </button>
       </div>
 
       {loading ? (
@@ -124,39 +152,51 @@ const UserDashboard = () => {
       ) : (
         <div>
           {stores.map((store) => (
-            <div className="rating-section">
+            <div key={store.id} className="store-card">
+              <h2>{store.name}</h2>
+
               <p>
-                <strong>My Rating:</strong> {store.userRating ?? "Not rated"}
+                <strong>Address:</strong> {store.address}
               </p>
 
               <p>
-                <strong>
-                  {store.userRating === null
-                    ? "Rate this store:"
-                    : "Change your rating:"}
-                </strong>
+                <strong>Overall Rating:</strong> {store.overallRating}
               </p>
 
-              <div className="rating-buttons">
-                {[1, 2, 3, 4, 5].map((rating) => (
-                  <button
-                    key={rating}
-                    className={
-                      store.userRating === rating
-                        ? "rating-button selected"
-                        : "rating-button"
-                    }
-                    onClick={() => {
-                      if (store.userRating === null) {
-                        submitRating(store.id, rating);
-                      } else {
-                        updateRating(store.id, rating);
+              <div className="rating-section">
+                <p>
+                  <strong>My Rating:</strong> {store.userRating ?? "Not rated"}
+                </p>
+
+                <p>
+                  <strong>
+                    {store.userRating === null
+                      ? "Rate this store:"
+                      : "Change your rating:"}
+                  </strong>
+                </p>
+
+                <div className="rating-buttons">
+                  {[1, 2, 3, 4, 5].map((rating) => (
+                    <button
+                      key={rating}
+                      className={
+                        store.userRating === rating
+                          ? "rating-button selected"
+                          : "rating-button"
                       }
-                    }}
-                  >
-                    {rating}
-                  </button>
-                ))}
+                      onClick={() => {
+                        if (store.userRating === null) {
+                          submitRating(store.id, rating);
+                        } else {
+                          updateRating(store.id, rating);
+                        }
+                      }}
+                    >
+                      {rating}
+                    </button>
+                  ))}
+                </div>
               </div>
             </div>
           ))}

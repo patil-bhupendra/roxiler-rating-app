@@ -101,3 +101,28 @@
   background: #222;
   color: white;
 }
+
+.search-section {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 20px;
+  flex-wrap: wrap;
+}
+
+.search-section input {
+  padding: 10px;
+  width: 250px;
+  box-sizing: border-box;
+}
+
+.search-section button {
+  padding: 10px 16px;
+  cursor: pointer;
+}
+
+.store-card {
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  padding: 20px;
+  margin-bottom: 20px;
+}
