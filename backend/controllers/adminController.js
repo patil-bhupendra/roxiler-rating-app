@@ -1,5 +1,5 @@
 const bcrypt = require("bcryptjs");
-const { User } = require("../models");
+const { User, Store } = require("../models");
 
 const createUser = async (req, res) => {
   try {
@@ -58,6 +58,124 @@ const createUser = async (req, res) => {
   }
 };
 
+const createStore = async (req, res) => {
+  try {
+    const { name, email, address, ownerId } = req.body;
+
+    if (!name || !email || !address) {
+      return res.status(400).json({
+        message: "Name, email and address are required",
+      });
+    }
+
+    const existingStore = await Store.findOne({
+      where: { email },
+    });
+
+    if (existingStore) {
+      return res.status(409).json({
+        message: "Store email already registered",
+      });
+    }
+
+    if (ownerId) {
+      const owner = await User.findOne({
+        where: {
+          id: ownerId,
+          role: "OWNER",
+        },
+      });
+
+      if (!owner) {
+        return res.status(400).json({
+          message: "Invalid store owner",
+        });
+      }
+    }
+
+    const store = await Store.create({
+      name,
+      email,
+      address,
+      ownerId: ownerId || null,
+    });
+
+    res.status(201).json({
+      message: "Store created successfully",
+      store: {
+        id: store.id,
+        name: store.name,
+        email: store.email,
+        address: store.address,
+        ownerId: store.ownerId,
+      },
+    });
+  } catch (error) {
+    console.error("Create store error:", error);
+
+    res.status(500).json({
+      message: "Server error",
+    });
+  }
+};
+
+const assignStoreOwner = async (req, res) => {
+  try {
+    const { ownerId } = req.body;
+    const { id } = req.params;
+
+    if (!ownerId) {
+      return res.status(400).json({
+        message: "Owner ID is required",
+      });
+    }
+
+    const store = await Store.findByPk(id);
+
+    if (!store) {
+      return res.status(404).json({
+        message: "Store not found",
+      });
+    }
+
+    const owner = await User.findOne({
+      where: {
+        id: ownerId,
+        role: "OWNER",
+      },
+    });
+
+    if (!owner) {
+      return res.status(400).json({
+        message: "Invalid owner",
+      });
+    }
+
+    store.ownerId = ownerId;
+
+    await store.save();
+
+    res.status(200).json({
+      message: "Store owner assigned successfully",
+      store: {
+        id: store.id,
+        name: store.name,
+        email: store.email,
+        address: store.address,
+        ownerId: store.ownerId,
+      },
+    });
+  } catch (error) {
+    console.error("Assign store owner error:", error);
+
+    res.status(500).json({
+      message: "Server error",
+    });
+  }
+};
+
 module.exports = {
   createUser,
+  createStore,
+  assignStoreOwner,
 };
