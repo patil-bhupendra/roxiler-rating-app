@@ -1,5 +1,5 @@
 const bcrypt = require("bcryptjs");
-const { User, Store } = require("../models");
+const { User, Store, Rating } = require("../models");
 
 const createUser = async (req, res) => {
   try {
@@ -174,8 +174,31 @@ const assignStoreOwner = async (req, res) => {
   }
 };
 
+const getDashboardStats = async (req, res) => {
+  try {
+    const totalUsers = await User.count();
+
+    const totalStores = await Store.count();
+
+    const totalRatings = await Rating.count();
+
+    res.status(200).json({
+      totalUsers,
+      totalStores,
+      totalRatings,
+    });
+  } catch (error) {
+    console.error("Dashboard stats error:", error);
+
+    res.status(500).json({
+      message: "Server error",
+    });
+  }
+};
+
 module.exports = {
   createUser,
   createStore,
   assignStoreOwner,
+  getDashboardStats,
 };
