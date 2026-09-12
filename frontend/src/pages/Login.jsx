@@ -7,8 +7,22 @@ const Login = () => {
 
   const navigate = useNavigate();
 
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+  const emailError = email.length > 0 && !emailRegex.test(email);
+
+  const passwordError = password.length === 0;
+
   const handleLogin = async (e) => {
     e.preventDefault();
+
+    if (!emailRegex.test(email)) {
+      return;
+    }
+
+    if (!password) {
+      return;
+    }
 
     try {
       const response = await fetch("http://localhost:5000/api/auth/login", {
@@ -84,19 +98,27 @@ const Login = () => {
                 onChange={(e) => setEmail(e.target.value)}
                 autoComplete="email"
                 required
-                className="w-full rounded-xl border border-slate-300 bg-white px-4 py-3 text-sm text-slate-900 placeholder:text-slate-400 outline-none transition focus:border-slate-900 focus:ring-4 focus:ring-slate-900/10"
+                className={`w-full rounded-xl border bg-white px-4 py-3 text-sm text-slate-900 placeholder:text-slate-400 outline-none transition focus:ring-4 ${
+                  emailError
+                    ? "border-red-500 focus:border-red-500 focus:ring-red-500/10"
+                    : "border-slate-300 focus:border-slate-900 focus:ring-slate-900/10"
+                }`}
               />
+
+              {emailError && (
+                <p className="text-xs font-medium text-red-600">
+                  Please enter a valid email address.
+                </p>
+              )}
             </div>
 
             <div className="flex flex-col gap-2">
-              <div className="flex items-center justify-between">
-                <label
-                  htmlFor="password"
-                  className="text-sm font-semibold text-slate-700"
-                >
-                  Password
-                </label>
-              </div>
+              <label
+                htmlFor="password"
+                className="text-sm font-semibold text-slate-700"
+              >
+                Password
+              </label>
 
               <input
                 id="password"
@@ -106,13 +128,24 @@ const Login = () => {
                 onChange={(e) => setPassword(e.target.value)}
                 autoComplete="current-password"
                 required
-                className="w-full rounded-xl border border-slate-300 bg-white px-4 py-3 text-sm text-slate-900 placeholder:text-slate-400 outline-none transition focus:border-slate-900 focus:ring-4 focus:ring-slate-900/10"
+                className={`w-full rounded-xl border bg-white px-4 py-3 text-sm text-slate-900 placeholder:text-slate-400 outline-none transition focus:ring-4 ${
+                  passwordError
+                    ? "border-red-500 focus:border-red-500 focus:ring-red-500/10"
+                    : "border-slate-300 focus:border-slate-900 focus:ring-slate-900/10"
+                }`}
               />
+
+              {passwordError && (
+                <p className="text-xs font-medium text-red-600">
+                  Password is required.
+                </p>
+              )}
             </div>
 
             <button
               type="submit"
-              className="w-full rounded-xl bg-slate-900 px-4 py-3 text-sm font-semibold text-white shadow-sm transition hover:bg-slate-800 hover:shadow-md active:scale-[0.99] focus:outline-none focus:ring-4 focus:ring-slate-900/20"
+              disabled={emailError || passwordError}
+              className="w-full rounded-xl bg-slate-900 px-4 py-3 text-sm font-semibold text-white shadow-sm transition hover:bg-slate-800 hover:shadow-md active:scale-[0.99] focus:outline-none focus:ring-4 focus:ring-slate-900/20 disabled:cursor-not-allowed disabled:opacity-50"
             >
               Sign in
             </button>
