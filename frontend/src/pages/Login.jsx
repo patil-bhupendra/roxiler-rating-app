@@ -5,16 +5,27 @@ const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
+  const [touched, setTouched] = useState({
+    email: false,
+    password: false,
+  });
+
   const navigate = useNavigate();
 
   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
-  const emailError = email.length > 0 && !emailRegex.test(email);
+  const emailError = touched.email && !emailRegex.test(email);
 
-  const passwordError = password.length === 0;
+  const passwordError = touched.password && password.length === 0;
 
   const handleLogin = async (e) => {
     e.preventDefault();
+
+    // Mark both fields as touched when user submits
+    setTouched({
+      email: true,
+      password: true,
+    });
 
     if (!emailRegex.test(email)) {
       return;
@@ -25,16 +36,19 @@ const Login = () => {
     }
 
     try {
-      const response = await fetch("https://roxiler-rating-app-6keq.onrender.com/api/auth/login", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
+      const response = await fetch(
+        "https://roxiler-rating-app-6keq.onrender.com/api/auth/login",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            email,
+            password,
+          }),
         },
-        body: JSON.stringify({
-          email,
-          password,
-        }),
-      });
+      );
 
       const data = await response.json();
 
@@ -96,6 +110,12 @@ const Login = () => {
                 placeholder="you@example.com"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
+                onBlur={() =>
+                  setTouched((prev) => ({
+                    ...prev,
+                    email: true,
+                  }))
+                }
                 autoComplete="email"
                 required
                 className={`w-full rounded-xl border bg-white px-4 py-3 text-sm text-slate-900 placeholder:text-slate-400 outline-none transition focus:ring-4 ${
@@ -126,6 +146,12 @@ const Login = () => {
                 placeholder="Enter your password"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
+                onBlur={() =>
+                  setTouched((prev) => ({
+                    ...prev,
+                    password: true,
+                  }))
+                }
                 autoComplete="current-password"
                 required
                 className={`w-full rounded-xl border bg-white px-4 py-3 text-sm text-slate-900 placeholder:text-slate-400 outline-none transition focus:ring-4 ${
