@@ -24,7 +24,7 @@ const AdminDashboard = () => {
           headers: {
             Authorization: `Bearer ${token}`,
           },
-        }
+        },
       );
 
       const data = await response.json();
@@ -40,10 +40,7 @@ const AdminDashboard = () => {
         totalRatings: data.totalRatings,
       });
     } catch (error) {
-      console.error(
-        "Fetch dashboard stats error:",
-        error
-      );
+      console.error("Fetch dashboard stats error:", error);
 
       alert("Unable to fetch dashboard statistics");
     } finally {
@@ -67,30 +64,48 @@ const AdminDashboard = () => {
       <div className="admin-header">
         <h1>Admin Dashboard</h1>
 
-        <button onClick={handleLogout}>
-          Logout
-        </button>
+        <button onClick={handleLogout}>Logout</button>
       </div>
 
       {loading ? (
         <p>Loading dashboard...</p>
       ) : (
-        <div className="stats-container">
-          <div className="stat-card">
-            <h2>Total Users</h2>
-            <p>{stats.totalUsers}</p>
+        <>
+          <div className="stats-container">
+            <div className="stat-card">
+              <h2>Total Users</h2>
+              <p>{stats.totalUsers}</p>
+            </div>
+
+            <div className="stat-card">
+              <h2>Total Stores</h2>
+              <p>{stats.totalStores}</p>
+            </div>
+
+            <div className="stat-card">
+              <h2>Total Ratings</h2>
+              <p>{stats.totalRatings}</p>
+            </div>
           </div>
 
-          <div className="stat-card">
-            <h2>Total Stores</h2>
-            <p>{stats.totalStores}</p>
-          </div>
+          <div className="admin-navigation">
+            <button onClick={() => navigate("/admin/users")}>
+              Manage Users
+            </button>
 
-          <div className="stat-card">
-            <h2>Total Ratings</h2>
-            <p>{stats.totalRatings}</p>
+            <button onClick={() => navigate("/admin/stores")}>
+              Manage Stores
+            </button>
+
+            <button onClick={() => navigate("/admin/users/add")}>
+              Add User
+            </button>
+
+            <button onClick={() => navigate("/admin/stores/add")}>
+              Add Store
+            </button>
           </div>
-        </div>
+        </>
       )}
     </div>
   );
