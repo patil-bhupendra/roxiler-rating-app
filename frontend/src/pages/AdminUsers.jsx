@@ -89,7 +89,11 @@ const AdminUsers = () => {
 
   return (
     <div>
-      <h1>Admin Users</h1>
+      <div className="admin-users-header">
+        <h1>Admin Users</h1>
+
+        <button onClick={() => navigate("/admin/users/add")}>Add User</button>
+      </div>
 
       <div className="admin-user-filters">
         <input

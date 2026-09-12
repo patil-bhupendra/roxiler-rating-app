@@ -7,6 +7,7 @@ import OwnerDashboard from "./pages/OwnerDashboard";
 import AdminUsers from "./pages/AdminUsers";
 import AdminStores from "./pages/AdminStores";
 import AdminUserDetails from "./pages/AdminUserDetails";
+import AdminAddUser from "./pages/AdminAddUser";
 
 function App() {
   return (
@@ -21,6 +22,7 @@ function App() {
         <Route path="/admin/stores" element={<AdminStores />} />
         <Route path="/owner" element={<OwnerDashboard />} />
         <Route path="/admin/users/:id" element={<AdminUserDetails />} />
+        <Route path="/admin/users/add" element={<AdminAddUser />} />
       </Routes>
     </BrowserRouter>
   );
