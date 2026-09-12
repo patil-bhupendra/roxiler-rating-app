@@ -48,7 +48,7 @@ const AdminUsers = () => {
       queryParams.append("order", sortOrder);
 
       const response = await fetch(
-        `http://localhost:5000/api/admin/users?${queryParams.toString()}`,
+        `https://roxiler-rating-app-6keq.onrender.com/api/admin/users?${queryParams.toString()}`,
         {
           headers: {
             Authorization: `Bearer ${token}`,

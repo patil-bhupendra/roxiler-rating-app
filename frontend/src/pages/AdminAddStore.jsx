@@ -23,7 +23,7 @@ const AdminAddStore = () => {
     try {
       setLoading(true);
 
-      const response = await fetch("http://localhost:5000/api/admin/stores", {
+      const response = await fetch("https://roxiler-rating-app-6keq.onrender.com/api/admin/stores", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

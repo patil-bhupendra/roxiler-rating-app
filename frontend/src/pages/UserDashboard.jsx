@@ -28,7 +28,7 @@ const UserDashboard = () => {
       }
 
       const response = await fetch(
-        `http://localhost:5000/api/stores?${queryParams.toString()}`,
+        `https://roxiler-rating-app-6keq.onrender.com/api/stores?${queryParams.toString()}`,
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -58,7 +58,7 @@ const UserDashboard = () => {
 
   const submitRating = async (storeId, rating) => {
     try {
-      const response = await fetch("http://localhost:5000/api/ratings", {
+      const response = await fetch("https://roxiler-rating-app-6keq.onrender.com/api/ratings", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -89,7 +89,7 @@ const UserDashboard = () => {
   const updateRating = async (storeId, rating) => {
     try {
       const response = await fetch(
-        `http://localhost:5000/api/ratings/${storeId}`,
+        `https://roxiler-rating-app-6keq.onrender.com/api/ratings/${storeId}`,
         {
           method: "PUT",
           headers: {
@@ -129,7 +129,7 @@ const UserDashboard = () => {
     try {
       setPasswordLoading(true);
 
-      const response = await fetch("http://localhost:5000/api/auth/password", {
+      const response = await fetch("https://roxiler-rating-app-6keq.onrender.com/api/auth/password", {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",

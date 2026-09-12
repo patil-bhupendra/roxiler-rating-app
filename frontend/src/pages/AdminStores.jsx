@@ -48,7 +48,7 @@ const AdminStores = () => {
       queryParams.append("order", sortOrder);
 
       const response = await fetch(
-        `http://localhost:5000/api/admin/stores?${queryParams.toString()}`,
+        `https://roxiler-rating-app-6keq.onrender.com/api/admin/stores?${queryParams.toString()}`,
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -75,7 +75,7 @@ const AdminStores = () => {
   const fetchOwners = async () => {
     try {
       const response = await fetch(
-        "http://localhost:5000/api/admin/users?role=OWNER&sortBy=name&order=ASC",
+        "https://roxiler-rating-app-6keq.onrender.com/api/admin/users?role=OWNER&sortBy=name&order=ASC",
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -125,7 +125,7 @@ const AdminStores = () => {
       setAssigningStoreId(storeId);
 
       const response = await fetch(
-        `http://localhost:5000/api/admin/stores/${storeId}/owner`,
+        `https://roxiler-rating-app-6keq.onrender.com/api/admin/stores/${storeId}/owner`,
         {
           method: "PUT",
           headers: {

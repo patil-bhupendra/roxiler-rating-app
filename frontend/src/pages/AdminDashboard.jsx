@@ -19,7 +19,7 @@ const AdminDashboard = () => {
       setLoading(true);
 
       const response = await fetch(
-        "http://localhost:5000/api/admin/dashboard",
+        "https://roxiler-rating-app-6keq.onrender.com/api/admin/dashboard",
         {
           headers: {
             Authorization: `Bearer ${token}`,

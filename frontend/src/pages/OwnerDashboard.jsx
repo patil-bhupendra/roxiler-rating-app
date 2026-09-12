@@ -18,7 +18,7 @@ const OwnerDashboard = () => {
       setLoading(true);
 
       const response = await fetch(
-        "http://localhost:5000/api/owner/dashboard",
+        "https://roxiler-rating-app-6keq.onrender.com/api/owner/dashboard",
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -53,7 +53,7 @@ const OwnerDashboard = () => {
     try {
       setUpdatingPassword(true);
 
-      const response = await fetch("http://localhost:5000/api/auth/password", {
+      const response = await fetch("https://roxiler-rating-app-6keq.onrender.com/api/auth/password", {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",

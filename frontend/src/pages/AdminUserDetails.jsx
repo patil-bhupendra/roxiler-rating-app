@@ -16,7 +16,7 @@ const AdminUserDetails = () => {
       setLoading(true);
 
       const response = await fetch(
-        `http://localhost:5000/api/admin/users/${id}`,
+        `https://roxiler-rating-app-6keq.onrender.com/api/admin/users/${id}`,
         {
           headers: {
             Authorization: `Bearer ${token}`,
