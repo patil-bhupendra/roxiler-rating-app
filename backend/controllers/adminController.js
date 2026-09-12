@@ -379,6 +379,11 @@ const getStores = async (req, res) => {
           model: Rating,
           attributes: [],
         },
+        {
+          model: User,
+          as: "owner",
+          attributes: ["id", "name", "email"],
+        },
       ],
       attributes: [
         "id",

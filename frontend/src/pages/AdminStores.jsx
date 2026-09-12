@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 
 const AdminStores = () => {
   const [stores, setStores] = useState([]);
+  const [owners, setOwners] = useState([]);
   const [loading, setLoading] = useState(true);
 
   const [nameSearch, setNameSearch] = useState("");
@@ -11,6 +12,9 @@ const AdminStores = () => {
 
   const [sortBy, setSortBy] = useState("id");
   const [order, setOrder] = useState("ASC");
+
+  const [ownerIds, setOwnerIds] = useState({});
+  const [assigningStoreId, setAssigningStoreId] = useState(null);
 
   const navigate = useNavigate();
 
@@ -68,8 +72,34 @@ const AdminStores = () => {
     }
   };
 
+  const fetchOwners = async () => {
+    try {
+      const response = await fetch(
+        "http://localhost:5000/api/admin/users?role=OWNER&sortBy=name&order=ASC",
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        },
+      );
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        alert(data.message);
+        return;
+      }
+
+      setOwners(data.users);
+    } catch (error) {
+      console.error("Fetch owners error:", error);
+      alert("Unable to fetch owners");
+    }
+  };
+
   useEffect(() => {
     fetchStores("", "", "", "id", "ASC");
+    fetchOwners();
   }, []);
 
   const clearFilters = () => {
@@ -81,6 +111,54 @@ const AdminStores = () => {
     setOrder("ASC");
 
     fetchStores("", "", "", "id", "ASC");
+  };
+
+  const assignOwner = async (storeId) => {
+    const ownerId = ownerIds[storeId];
+
+    if (!ownerId) {
+      alert("Please enter owner ID");
+      return;
+    }
+
+    try {
+      setAssigningStoreId(storeId);
+
+      const response = await fetch(
+        `http://localhost:5000/api/admin/stores/${storeId}/owner`,
+        {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+          body: JSON.stringify({
+            ownerId: Number(ownerId),
+          }),
+        },
+      );
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        alert(data.message);
+        return;
+      }
+
+      alert("Store owner assigned successfully");
+
+      setOwnerIds((prev) => ({
+        ...prev,
+        [storeId]: "",
+      }));
+
+      fetchStores();
+    } catch (error) {
+      console.error("Assign owner error:", error);
+      alert("Unable to assign store owner");
+    } finally {
+      setAssigningStoreId(null);
+    }
   };
 
   return (
@@ -142,6 +220,8 @@ const AdminStores = () => {
               <th>Email</th>
               <th>Address</th>
               <th>Rating</th>
+              <th>Owner</th>
+              <th>Assign Owner</th>
             </tr>
           </thead>
 
@@ -149,9 +229,55 @@ const AdminStores = () => {
             {stores.map((store) => (
               <tr key={store.id}>
                 <td>{store.name}</td>
+
                 <td>{store.email}</td>
+
                 <td>{store.address}</td>
+
                 <td>{store.overallRating}</td>
+
+                <td>
+                  {store.owner ? (
+                    <div>
+                      <strong>{store.owner.name}</strong>
+                      <br />
+                      <small>{store.owner.email}</small>
+                    </div>
+                  ) : (
+                    "Not Assigned"
+                  )}
+                </td>
+
+                <td>
+                  <select
+                    value={ownerIds[store.id] || ""}
+                    onChange={(e) =>
+                      setOwnerIds((prev) => ({
+                        ...prev,
+                        [store.id]: e.target.value,
+                      }))
+                    }
+                  >
+                    <option value="">Select Owner</option>
+
+                    {owners.map((owner) => (
+                      <option key={owner.id} value={owner.id}>
+                        {owner.name}
+                      </option>
+                    ))}
+                  </select>
+
+                  <button
+                    onClick={() => assignOwner(store.id)}
+                    disabled={
+                      !ownerIds[store.id] || assigningStoreId === store.id
+                    }
+                  >
+                    {assigningStoreId === store.id
+                      ? "Assigning..."
+                      : "Assign Owner"}
+                  </button>
+                </td>
               </tr>
             ))}
           </tbody>
