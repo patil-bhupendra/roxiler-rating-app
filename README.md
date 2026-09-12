@@ -256,56 +256,56 @@ Store
  └── hasMany ──→ Ratings
  ```
 
-The Rating table uses a unique constraint on the combination of userId and storeId to prevent duplicate ratings for the same store.
+The `Rating` table uses a unique constraint on the combination of `userId` and `storeId` to prevent duplicate ratings for the same store.
 
 ---
 
 ## API Endpoints
 
-**Authentication**
+### Authentication
 
-Method	Endpoint	                Description
+| Method | Endpoint | Description |
+|---|---|---|
+| POST | `/api/auth/register` | Register a normal user |
+| POST | `/api/auth/login` | Login |
+| GET | `/api/auth/me` | Get authenticated user |
+| PUT | `/api/auth/password` | Update password |
 
-POST	/api/auth/register	        Register a normal user
-POST	/api/auth/login	            Login
-GET	    /api/auth/me	            Get authenticated user
-PUT	    /api/auth/password	        Update password
+### Admin
 
-**Admin**
+| Method | Endpoint | Description |
+|---|---|---|
+| POST | `/api/admin/users` | Create a user |
+| POST | `/api/admin/stores` | Create a store |
+| PUT | `/api/admin/stores/:id/owner` | Assign store owner |
+| GET | `/api/admin/dashboard` | Get dashboard statistics |
+| GET | `/api/admin/users` | Get users |
+| GET | `/api/admin/users/:id` | Get user details |
+| GET | `/api/admin/stores` | Get stores |
 
-Method	Endpoint	                Description
+### Stores
 
-POST	/api/admin/users	        Create a user
-POST	/api/admin/stores	        Create a store
-PUT	    /api/admin/stores/:id/owner	Assign store owner
-GET	    /api/admin/dashboard	    Get dashboard statistics
-GET	    /api/admin/users	        Get users
-GET	    /api/admin/users/:id	    Get user details
-GET	    /api/admin/stores	        Get stores
+| Method | Endpoint | Description |
+|---|---|---|
+| GET | `/api/stores` | Get stores with search options |
 
-**Stores**
+### Ratings
 
-Method	Endpoint	                Description
+| Method | Endpoint | Description |
+|---|---|---|
+| POST | `/api/ratings` | Submit a rating |
+| PUT | `/api/ratings/:storeId` | Update an existing rating |
 
-GET	    /api/stores	                Get stores with search options
+### Store Owner
 
-**Ratings**
-
-Method	Endpoint	                Description
-
-POST	/api/ratings	            Submit a rating
-PUT	    /api/ratings/:storeId	    Update an existing rating
-
-**Store Owner**
-
-Method	Endpoint	               Description
-GET	    /api/owner/dashboard	   Get owner dashboard
-
+| Method | Endpoint | Description |
+|---|---|---|
+| GET | `/api/owner/dashboard` | Get owner dashboard |
 ---
 
 **Environment Variables**
 
-Create a .env file inside the backend directory:
+Create a `.env` file inside the `backend` directory:
 
 ```
 DB_HOST=localhost
@@ -316,7 +316,7 @@ DB_PORT=3306
 JWT_SECRET=your_jwt_secret
 ```
 
-The .env file should never be committed to GitHub.
+The `.env` file should never be committed to GitHub.
 
 ---
 
