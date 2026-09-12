@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 const AdminUsers = () => {
   const [users, setUsers] = useState([]);
@@ -10,6 +11,7 @@ const AdminUsers = () => {
   const [roleFilter, setRoleFilter] = useState("");
   const [sortBy, setSortBy] = useState("id");
   const [order, setOrder] = useState("ASC");
+  const navigate = useNavigate();
 
   const token = localStorage.getItem("token");
 
@@ -151,6 +153,7 @@ const AdminUsers = () => {
               <th>Email</th>
               <th>Address</th>
               <th>Role</th>
+              <th>Action</th>
             </tr>
           </thead>
 
@@ -161,6 +164,12 @@ const AdminUsers = () => {
                 <td>{user.email}</td>
                 <td>{user.address}</td>
                 <td>{user.role}</td>
+
+                <td>
+                  <button onClick={() => navigate(`/admin/users/${user.id}`)}>
+                    View Details
+                  </button>
+                </td>
               </tr>
             ))}
           </tbody>
