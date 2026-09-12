@@ -8,12 +8,17 @@ const AdminStores = () => {
   const [emailSearch, setEmailSearch] = useState("");
   const [addressSearch, setAddressSearch] = useState("");
 
+  const [sortBy, setSortBy] = useState("id");
+  const [order, setOrder] = useState("ASC");
+
   const token = localStorage.getItem("token");
 
   const fetchStores = async (
     name = nameSearch,
     email = emailSearch,
-    address = addressSearch
+    address = addressSearch,
+    sort = sortBy,
+    sortOrder = order,
   ) => {
     try {
       setLoading(true);
@@ -32,13 +37,16 @@ const AdminStores = () => {
         queryParams.append("address", address.trim());
       }
 
+      queryParams.append("sortBy", sort);
+      queryParams.append("order", sortOrder);
+
       const response = await fetch(
         `http://localhost:5000/api/admin/stores?${queryParams.toString()}`,
         {
           headers: {
             Authorization: `Bearer ${token}`,
           },
-        }
+        },
       );
 
       const data = await response.json();
@@ -58,7 +66,7 @@ const AdminStores = () => {
   };
 
   useEffect(() => {
-    fetchStores("", "", "");
+    fetchStores("", "", "", "id", "ASC");
   }, []);
 
   const clearFilters = () => {
@@ -66,14 +74,16 @@ const AdminStores = () => {
     setEmailSearch("");
     setAddressSearch("");
 
-    fetchStores("", "", "");
+    setSortBy("id");
+    setOrder("ASC");
+
+    fetchStores("", "", "", "id", "ASC");
   };
 
   return (
     <div>
       <h1>Admin Stores</h1>
 
-      
       <div className="admin-store-filters">
         <input
           type="text"
@@ -96,16 +106,23 @@ const AdminStores = () => {
           onChange={(e) => setAddressSearch(e.target.value)}
         />
 
-        <button onClick={() => fetchStores()}>
-          Search
-        </button>
+        <select value={sortBy} onChange={(e) => setSortBy(e.target.value)}>
+          <option value="id">Sort by ID</option>
+          <option value="name">Sort by Name</option>
+          <option value="email">Sort by Email</option>
+          <option value="address">Sort by Address</option>
+        </select>
 
-        <button onClick={clearFilters}>
-          Clear
-        </button>
+        <select value={order} onChange={(e) => setOrder(e.target.value)}>
+          <option value="ASC">Ascending</option>
+          <option value="DESC">Descending</option>
+        </select>
+
+        <button onClick={() => fetchStores()}>Search</button>
+
+        <button onClick={clearFilters}>Clear</button>
       </div>
 
-      
       {loading ? (
         <p>Loading stores...</p>
       ) : stores.length === 0 ? (
