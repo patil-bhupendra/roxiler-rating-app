@@ -118,6 +118,19 @@ const Login = () => {
             </button>
           </form>
 
+          <div className="mt-7 border-t border-slate-200 pt-6 text-center">
+            <p className="text-sm text-slate-500">
+              Don't have an account?{" "}
+              <button
+                type="button"
+                onClick={() => navigate("/register")}
+                className="font-semibold text-slate-900 transition hover:text-slate-600"
+              >
+                Register
+              </button>
+            </p>
+          </div>
+
           <p className="py-7 text-center text-xs text-slate-400">
             Secure access for administrators, store owners and users.
           </p>
