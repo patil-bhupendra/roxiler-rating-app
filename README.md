@@ -6,6 +6,11 @@ The application provides role-based access for **System Administrators, Normal U
 
 ---
 
+## Live Application:
+https://roxiler-rating-app-alpha.vercel.app/
+
+---
+
 ## Features
 
 ### Authentication & Authorization
