@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 const AdminStores = () => {
   const [stores, setStores] = useState([]);
@@ -10,6 +11,8 @@ const AdminStores = () => {
 
   const [sortBy, setSortBy] = useState("id");
   const [order, setOrder] = useState("ASC");
+
+  const navigate = useNavigate();
 
   const token = localStorage.getItem("token");
 
@@ -82,7 +85,11 @@ const AdminStores = () => {
 
   return (
     <div>
-      <h1>Admin Stores</h1>
+      <div className="admin-stores-header">
+        <h1>Admin Stores</h1>
+
+        <button onClick={() => navigate("/admin/stores/add")}>Add Store</button>
+      </div>
 
       <div className="admin-store-filters">
         <input

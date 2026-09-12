@@ -205,3 +205,15 @@
   font-weight: 700;
   margin-bottom: 0;
 }
+
+.admin-users-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.admin-users-header button {
+  padding: 10px 16px;
+  cursor: pointer;
+}
