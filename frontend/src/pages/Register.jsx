@@ -11,11 +11,48 @@ const Register = () => {
 
   const navigate = useNavigate();
 
+  const passwordRegex = /^(?=.*[A-Z])(?=.*[^A-Za-z0-9]).{8,16}$/;
+
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+  const nameError = name.length > 0 && (name.length < 20 || name.length > 60);
+
+  const emailError = email.length > 0 && !emailRegex.test(email);
+
+  const passwordError = password.length > 0 && !passwordRegex.test(password);
+
+  const confirmPasswordError =
+    confirmPassword.length > 0 && confirmPassword !== password;
+
+  const addressError = address.length > 400;
+
   const handleRegister = async (e) => {
     e.preventDefault();
 
+    if (name.length < 20 || name.length > 60) {
+      alert("Name must be between 20 and 60 characters");
+      return;
+    }
+
+    if (!emailRegex.test(email)) {
+      alert("Please enter a valid email address");
+      return;
+    }
+
+    if (!passwordRegex.test(password)) {
+      alert(
+        "Password must be 8-16 characters and contain at least one uppercase letter and one special character.",
+      );
+      return;
+    }
+
     if (password !== confirmPassword) {
       alert("Passwords do not match");
+      return;
+    }
+
+    if (address.length > 400) {
+      alert("Address cannot exceed 400 characters");
       return;
     }
 
@@ -78,6 +115,7 @@ const Register = () => {
           </div>
 
           <form onSubmit={handleRegister} className="space-y-5">
+            {/* Name */}
             <div className="flex flex-col gap-2">
               <label
                 htmlFor="name"
@@ -92,11 +130,28 @@ const Register = () => {
                 placeholder="Enter your full name"
                 value={name}
                 onChange={(e) => setName(e.target.value)}
+                minLength={20}
+                maxLength={60}
                 required
-                className="w-full rounded-xl border border-slate-300 bg-white px-4 py-3 text-sm text-slate-900 placeholder:text-slate-400 outline-none transition focus:border-slate-900 focus:ring-4 focus:ring-slate-900/10"
+                className={`w-full rounded-xl border bg-white px-4 py-3 text-sm text-slate-900 placeholder:text-slate-400 outline-none transition focus:ring-4 ${
+                  nameError
+                    ? "border-red-500 focus:border-red-500 focus:ring-red-500/10"
+                    : "border-slate-300 focus:border-slate-900 focus:ring-slate-900/10"
+                }`}
               />
+
+              {nameError && (
+                <p className="text-xs font-medium text-red-600">
+                  Name must be between 20 and 60 characters.
+                </p>
+              )}
+
+              <p className="text-right text-xs text-slate-400">
+                {name.length}/60
+              </p>
             </div>
 
+            {/* Email */}
             <div className="flex flex-col gap-2">
               <label
                 htmlFor="email"
@@ -112,10 +167,21 @@ const Register = () => {
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 required
-                className="w-full rounded-xl border border-slate-300 bg-white px-4 py-3 text-sm text-slate-900 placeholder:text-slate-400 outline-none transition focus:border-slate-900 focus:ring-4 focus:ring-slate-900/10"
+                className={`w-full rounded-xl border bg-white px-4 py-3 text-sm text-slate-900 placeholder:text-slate-400 outline-none transition focus:ring-4 ${
+                  emailError
+                    ? "border-red-500 focus:border-red-500 focus:ring-red-500/10"
+                    : "border-slate-300 focus:border-slate-900 focus:ring-slate-900/10"
+                }`}
               />
+
+              {emailError && (
+                <p className="text-xs font-medium text-red-600">
+                  Please enter a valid email address.
+                </p>
+              )}
             </div>
 
+            {/* Password */}
             <div className="flex flex-col gap-2">
               <label
                 htmlFor="password"
@@ -130,11 +196,25 @@ const Register = () => {
                 placeholder="Enter your password"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
+                minLength={8}
+                maxLength={16}
                 required
-                className="w-full rounded-xl border border-slate-300 bg-white px-4 py-3 text-sm text-slate-900 placeholder:text-slate-400 outline-none transition focus:border-slate-900 focus:ring-4 focus:ring-slate-900/10"
+                className={`w-full rounded-xl border bg-white px-4 py-3 text-sm text-slate-900 placeholder:text-slate-400 outline-none transition focus:ring-4 ${
+                  passwordError
+                    ? "border-red-500 focus:border-red-500 focus:ring-red-500/10"
+                    : "border-slate-300 focus:border-slate-900 focus:ring-slate-900/10"
+                }`}
               />
+
+              {passwordError && (
+                <p className="text-xs font-medium leading-5 text-red-600">
+                  Password must be 8–16 characters and contain at least one
+                  uppercase letter and one special character.
+                </p>
+              )}
             </div>
 
+            {/* Confirm Password */}
             <div className="flex flex-col gap-2">
               <label
                 htmlFor="confirmPassword"
@@ -150,10 +230,21 @@ const Register = () => {
                 value={confirmPassword}
                 onChange={(e) => setConfirmPassword(e.target.value)}
                 required
-                className="w-full rounded-xl border border-slate-300 bg-white px-4 py-3 text-sm text-slate-900 placeholder:text-slate-400 outline-none transition focus:border-slate-900 focus:ring-4 focus:ring-slate-900/10"
+                className={`w-full rounded-xl border bg-white px-4 py-3 text-sm text-slate-900 placeholder:text-slate-400 outline-none transition focus:ring-4 ${
+                  confirmPasswordError
+                    ? "border-red-500 focus:border-red-500 focus:ring-red-500/10"
+                    : "border-slate-300 focus:border-slate-900 focus:ring-slate-900/10"
+                }`}
               />
+
+              {confirmPasswordError && (
+                <p className="text-xs font-medium text-red-600">
+                  Passwords do not match.
+                </p>
+              )}
             </div>
 
+            {/* Address */}
             <div className="flex flex-col gap-2">
               <label
                 htmlFor="address"
@@ -167,21 +258,45 @@ const Register = () => {
                 placeholder="Enter your address"
                 value={address}
                 onChange={(e) => setAddress(e.target.value)}
+                maxLength={400}
                 required
                 rows="3"
-                className="w-full resize-none rounded-xl border border-slate-300 bg-white px-4 py-3 text-sm text-slate-900 placeholder:text-slate-400 outline-none transition focus:border-slate-900 focus:ring-4 focus:ring-slate-900/10"
+                className={`w-full resize-none rounded-xl border bg-white px-4 py-3 text-sm text-slate-900 placeholder:text-slate-400 outline-none transition focus:ring-4 ${
+                  addressError
+                    ? "border-red-500 focus:border-red-500 focus:ring-red-500/10"
+                    : "border-slate-300 focus:border-slate-900 focus:ring-slate-900/10"
+                }`}
               />
+
+              {addressError && (
+                <p className="text-xs font-medium text-red-600">
+                  Address cannot exceed 400 characters.
+                </p>
+              )}
+
+              <p className="text-right text-xs text-slate-400">
+                {address.length}/400
+              </p>
             </div>
 
+            {/* Submit */}
             <button
               type="submit"
-              disabled={loading}
+              disabled={
+                loading ||
+                nameError ||
+                emailError ||
+                passwordError ||
+                confirmPasswordError ||
+                addressError
+              }
               className="w-full rounded-xl bg-slate-900 px-4 py-3 text-sm font-semibold text-white shadow-sm transition hover:bg-slate-800 hover:shadow-md active:scale-[0.99] focus:outline-none focus:ring-4 focus:ring-slate-900/20 disabled:cursor-not-allowed disabled:opacity-50"
             >
               {loading ? "Creating Account..." : "Create Account"}
             </button>
           </form>
 
+          {/* Login Link */}
           <div className="mt-7 border-t border-slate-200 pt-6 text-center">
             <p className="text-sm text-slate-500">
               Already have an account?{" "}
