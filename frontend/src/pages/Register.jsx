@@ -115,7 +115,6 @@ const Register = () => {
           </div>
 
           <form onSubmit={handleRegister} className="space-y-5">
-            {/* Name */}
             <div className="flex flex-col gap-2">
               <label
                 htmlFor="name"
@@ -151,7 +150,6 @@ const Register = () => {
               </p>
             </div>
 
-            {/* Email */}
             <div className="flex flex-col gap-2">
               <label
                 htmlFor="email"
@@ -181,7 +179,6 @@ const Register = () => {
               )}
             </div>
 
-            {/* Password */}
             <div className="flex flex-col gap-2">
               <label
                 htmlFor="password"
@@ -214,7 +211,6 @@ const Register = () => {
               )}
             </div>
 
-            {/* Confirm Password */}
             <div className="flex flex-col gap-2">
               <label
                 htmlFor="confirmPassword"
@@ -244,7 +240,6 @@ const Register = () => {
               )}
             </div>
 
-            {/* Address */}
             <div className="flex flex-col gap-2">
               <label
                 htmlFor="address"
@@ -279,7 +274,6 @@ const Register = () => {
               </p>
             </div>
 
-            {/* Submit */}
             <button
               type="submit"
               disabled={
@@ -296,7 +290,6 @@ const Register = () => {
             </button>
           </form>
 
-          {/* Login Link */}
           <div className="mt-7 border-t border-slate-200 pt-6 text-center">
             <p className="text-sm text-slate-500">
               Already have an account?{" "}
