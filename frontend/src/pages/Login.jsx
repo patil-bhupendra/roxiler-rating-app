@@ -21,7 +21,7 @@ const Login = () => {
   const handleLogin = async (e) => {
     e.preventDefault();
 
-    // Mark both fields as touched when user submits
+    
     setTouched({
       email: true,
       password: true,
